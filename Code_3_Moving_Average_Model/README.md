@@ -1,72 +1,84 @@
-![RBC Banner Image](Images/00_RBC_Banner.png)
-
-## Project 3
-
-# Overview, Project Proposal & Scope
-
-For project 3, our core team will be extending off of project 1 (https://github.com/NatashaPredov/Project-1-.git) and project 2 (https://github.com/NatashaPredov/Project-2.git). In short, a summary of Project 1 and Project 2 is as follows:
-
-  Project 1: 
+# Project 3 - Predict Weekly Trends of Royal Bank (RY.TO)
+# Moving Average Model
+![RBC Banner Image](../Images/00_RBC_Banner.png)
   
-    - Wanted to investigate and determine a predictive model for the long term behaviour of relatively stable ETFs.
-    - Wanted understand how this model would react and change due to the unforseen impacts the COVID-19 pandemic had on the Canadian Banks.
-    - The timeframe of the model data that the team will be analyzing covers 4 years: August 2016 through July 2020. While the validation data will cover:      - August 2019 through July 2020 - 6 months before and after the February 2020 COVID-19 crash. Due to this being unforseen and very out of the ordinary, the team will be ignoring the data up until Feb 2020 then picking our analysis back up 6 months post crash.
+## Project Overview  
+---
+Objective: To enhance returns savings accounts through an active trading process that can be executed in all types accounts.    
+Approach:  By predicting the weekly trend of Royal Bank (RY.TO)  
   
-  Project 2: 
+## Moving Average Modeling Process  
+![EMATREND_BNS… (3) - JupyterLab - Google Chrome 2_8_2023 11_53_21 AM](https://user-images.githubusercontent.com/110307714/218336164-2300cb9a-2bc5-4ba1-9917-c0e7a584c1cd.png)
+
+### The purpose of this code is to calculate the average change for the UpsideBreakout (ema8 > ema20) and DownsideBreakout (ema20 > ema8) over the lookahead period in stock data.
+- A copy of the input stock data is created using the "dfCopy = stock_data.copy()" line.
+- The index of the copy of the data is reset using "dfCopy = dfCopy.reset_index()" line.
+- The lookahead period is defined as 'lookahead = 30' and the variables 'UpsideBreakout' and 'DownsideBreakout' are set to False. The variable 'CloseAtCrossover' is     set to 'NaN'. 
+- Two dictionaries, 'dctUpsideBreakout' and 'dctDownsideBreakout' are also created to store the change in the close price.
+- The dfCopy dataframe is then iterated over using for index, row in 'dfCopy.iterrows():' to identify the occurrences of the 'UpsideBreakout' and 'DownsideBreakout'     events.
+- If an 'UpsideBreakout' event is identified, the average change for the next lookahead days is calculated and stored in the 'dctUpsideBreakout' dictionary.
+- If a 'DownsideBreakout' event is identified, the average change for the next lookahead days is calculated and stored in the 'dctDownsideBreakout' dictionary.
+- The code will output the average change for the 'UpsideBreakout' and 'DownsideBreakout' events over the lookahead period, stored in the dictionaries 'dctUpsideBreakout' and 'dctDownsideBreakout'. The close price after 16 days from the crossover event is also stored in the 'Close16' column of the 'dfCopy' dataframe.
+![Project-3_EMA_TREND_BMO ipynb at main · NatashaPredov_Project-3 - Google Chrome 2_12_2023 3_51_59 PM](https://user-images.githubusercontent.com/110307714/218336539-fa8867f3-ee06-4a52-8151-98efb1524126.png)
+### Trend Length
+- A new column, trend_length, is created to store the length of the trend, and a new column, trend, is created to store the direction of the trend.
+
+- The following variables are initialized to track the crossovers:
+
+- prev_ema8 to store the previous period's EMA8
+- prev_ema20 to store the previous period's EMA20
+- The dataframe is looped through using df.iterrows() to find the crossovers and track the trend length and direction. The following logic is used:
+
+- If the previous period's EMA8 is less than the previous period's EMA20 and the current period's EMA8 is greater than the current period's EMA20,a crossover from       below to above the EMA20 has occurred, and the trend is set to 'up'.
+  The current period's trend_length is set to 1 and the trend is set to 'up'.
+  If the previous period's EMA8 is greater than the previous period's EMA20 and the current period's EMA8 is less than the current period's EMA20, a crossover from     above to below the EMA20 has occurred, and the trend is set to 'down'. 
+  The current period's trend_length is set to 1 and the trend is set to 'down'.
+  If the trend is not None, the current period's trend_length is set to the previous period's trend_length plus 1 and the trend is set to the previous period's trend.
+  The final dataframe is displayed using the display function and the tail function to show the last 10 rows of the data.
+  With this code, you can track the trend length and direction based on the crossover of the EMA8 and EMA20 indicators.
   
-    - Determine a trading strategy for Scotiabank stocks (BNS) in a way that will beat a buy and hold strategy relative to the other correlated Bank stocks.
+![Project-3_EMA_TREND_BMO ipynb at main · NatashaPredov_Project-3 - Google Chrome 2_12_2023 3_53_53 PM](https://user-images.githubusercontent.com/110307714/218336647-ccf230ae-15d1-46ed-a011-615e512302c5.png)
 
-  
-In project 3, our team used 3 years of data to build the models that would help to determine if we are confidnet that the trend for the next two weeks are up (= long trade), down (= short trade), flat to to emulate trading security multiple times within a business week. This would help to monitor the trade moving forward. 
+![Project-3_EMA_TREND_BMO ipynb at main · NatashaPredov_Project-3 - Google Chrome 2_12_2023 3_59_59 PM](https://user-images.githubusercontent.com/110307714/218336916-1acfdd28-f9b6-4afe-91df-479f65481afe.png)
+### Average Duration of Trend
+- The average duration of the trend is calculated by looping through the dataframe and keeping track of the length of each trend. The following logic is used:
+- A list, trend_lengths, is created to store the length of each trend.
+- A variable, current_trend_length, is initialized to keep track of the length of the current trend.
+- The dataframe is looped through using df.iterrows().
+- If the current row has a trend (row['trend'] is not None), the current_trend_length is incremented.
+- If the current row is not the last row in the dataframe (i < df.shape[0] - 1) and the trend direction in the next row is different from the current row (df.iloc[i+1]['trend'] != row['trend']), the current_trend_length is added to the trend_lengths list and the current_trend_length is reset to 0.
+- After looping through the dataframe, if the trend_lengths list has any elements, the average duration of the trend is calculated as the sum of the trend lengths divided by the number of trends.
+- If no trends are found in the data (the trend_lengths list is empty), a message is printed to indicate this.
 
-In project 3, our team utilized RBC on TSX (CAD $) and on American Exchange (USD $) to understand correlation. In order to create an algorithm the predicts a stock’s trend over the next 10 trading days. The work below extends from the learning obtained since Project 2 completed through 
+![Project-3_EMA_TREND_BMO ipynb at main](https://user-images.githubusercontent.com/110307714/218336984-561b66f0-cd74-4cf4-bade-2345dfd541d7.png)
 
-1.Utilizing Metrics for Feature engineering: std dev, average price as determined by the avg open/close high/low or all four
-2. 3 types of Modes for prediction: Machine Learning, Neural Networks, and Moving Average Model.
+### Trend Accuracy
 
-Before we proceed to the Process of the work completed in Project 3, a few clarifying definitions: 
+In this section, the accuracy of the trend is calculated based on the comparison of the closing price and the opening price of each period. The following steps are taken:
 
-  Day Trading
-  
-    - If you buy and sell (or sell and buy) a security within the same day, you are day trading.
-    - Day traders leverage fluctuations in an asset's daily price with a goal of turning a profit.
-    
- Week Trading
-    - If you buy and sell (or sell and buy) a security within a week or two, you are week trading. 
-    - Week traders leverage fluctuations in an asset's price over several days with a goal of turning a profit.
+- A variable, total_rows, is created to store the total number of rows in the dataframe.
+- A variable, correct_trend, is created to keep track of the number of times the trend direction correctly matches the direction of the price movement.
+- The dataframe is looped through using df.iterrows() to check the accuracy of the trend.
+- For each row, if the trend is not None, the closing price is compared with the opening price. If the closing price is greater than the opening price and the trend     is 'up', the correct_trend variable is incremented. If the closing price is less than the opening price and the trend is 'down', the correct_trend variable is         incremented.
+- The accuracy is calculated by dividing the correct_trend by the total_rows.
 
+![Project-3_EMA_TREND_BMO ipynb at main ](https://user-images.githubusercontent.com/110307714/218337138-78936712-3a50-4321-a8a0-45474b53310f.png)
 
-
-# Process
+### Trend Crossover Frequency
+- A new variable, crossovers, is initialized to keep track of the number of trend crossovers.
+- The dataframe is looped through using df.iterrows() and the following logic is used:
+  If the trend length is equal to 1, it means that it is a crossover, so the crossovers counter is incremented.
+  The final value of crossovers is printed, giving us the frequency of crossovers in the data.
  
-Model 1: Machine Learning
+![Project-3_EMA_TREND_BMO ipynb at main Project-3 - Google Chrome 2_12_2023 4_05_02 PM](https://user-images.githubusercontent.com/110307714/218337203-196e5b31-2830-477b-a158-1be1fe4578b2.png)
 
-Model 2: Neural Networks
+### The code above calculates the average impact of crossovers on the price of an asset. The following steps are taken:
 
-Model 3: 
+ - Initialize variables to track the impact of crossovers:
+   Crossover_count to keep track of the number of crossovers.
+   Crossover_impact_sum to keep track of the total impact of the crossovers.
+   Loop through the data using df.iterrows().
 
-# Findings and Outcomes
+-  If a row has a value in the trend column (indicating a crossover), increment the crossover_count and add or subtract the difference between the close and open        prices from the crossover_impact_sum, depending on the trend direction.
 
-# Next Steps
-
-From project 1 to project 3, our team's output of the project has been code first focus meaning that we did not have a front end user interface for our project. User interfaces allow users whom may not be as technically savy as the project group, to view, access, alter and use the code we have developed over the last 6 months. Therefor if the cumulation of our work were to be fully recognized and utilized by the general public, our next step would be to connect the backend code to a front end UI that incorporates an easy to use user experience. The UI/UX will focus on delivering our code in a simplistic, straightforward, consistent manner. 
-
-From detailed research, a few options stuck out that range from pre built options to building of our own solution:
-
-(1) Django - a python framework that produces maintainable webesites. It removes the barrier to entry for front end development and design, and allows developers to focus on the meat of a website, the backend logic
-
-  Link: https://www.djangoproject.com/start/overview/
-  
-(2) Utilization of APIs - APIs, Applicaton Programming Interface, connects the server side (where the code lives) to the client side (what the user interacts with) to allow the requests sent by the user to be absorbed by the code side to then output a result
-
-(3) React - JS web application interface that can be used in parallel with Django with less code than other front end options  
-
-The answer to which of these above options would fully depend on the timeline of which we want to produce this front end and how much invovlement we, as a team would like. If, for example, we are pitching our projects as a POC, looking for seed investments, I would suggest utilizing Django as it outlines  clear documentation on how to write a database driven web app through extensive docs and community contributions. If on the other hand our team had another 6 months to really stregthen the code, build up low and high fidelity prototypes, conduct beta user testing and meet the satisfactions of the stakeholders, I would suggest that we build strong configuration files and APIs of which the front end could call to when a user interacts with the UI that was curated specifically for our users. 
-
-# Installation Guide and Slide Revision
-
-To view this project, follow the main branch found in this Github repo to the final code that encompasses all of the contributions made by the team members.
-
-The code which is submitted is commented with concise, relevant notes that other developers can understand so future extensions on the work submitted can be explored if needed.
-
-To review the Google Slides that were presented to the class kindly use: https://docs.google.com/presentation/d/1C8Vvf03I_RBEGCyahndJCq-2HyYml-AoFkWYqBYA9f0/edit?usp=sharing
+-  After looping through the entire dataframe, divide the crossover_impact_sum by the crossover_count to find the average impact of the crossover on the price. 
